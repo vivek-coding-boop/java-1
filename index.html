@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programs - Autoboxing, Serialization & File Handling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .main-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 8px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .main-tab {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .main-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .main-content {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .main-content.active {
+            display: block;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+
+        .section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-id {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .number-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .result-section {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+            display: block;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+            display: block;
+        }
+
+        .demo-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .demo-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            border-left: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #ddd;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .main-tabs {
+                flex-direction: column;
+            }
+            
+            .main-tab {
+                min-width: unset;
+            }
+            
+            .card-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Java Programs Suite</h1>
+            <p>Interactive Web Implementation of Autoboxing, Serialization & Employee Management</p>
+        </div>
+
+        <div class="main-tabs">
+            <div class="main-tab active" onclick="switchMainTab(0)">🧮 Autoboxing Calculator</div>
+            <div class="main-tab" onclick="switchMainTab(1)">🎓 Student Serialization</div>
+            <div class="main-tab" onclick="switchMainTab(2)">👥 Employee Management</div>
+        </div>
+
+        <!-- Autoboxing Calculator -->
+        <div class="main-content active" id="main-tab-0">
+            <div class="section">
+                <h3>🧮 Autoboxing Sum Calculator</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="numberInput">Enter Number (as string):</label>
+                        <input type="text" id="numberInput" placeholder="e.g., '123'" />
+                    </div>
+                    <button class="btn btn-primary" onclick="addNumber()">Add Number</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bulkCount">Add Random Numbers:</label>
+                        <input type="number" id="bulkCount" placeholder="How many?" min="1" max="20" />
+                    </div>
+                    <button class="btn btn-secondary" onclick="addRandomNumbers()">Generate Random</button>
+                    <button class="btn btn-danger" onclick="clearNumbers()">Clear All</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h4>📊 Numbers Collection (Autoboxed Integers):</h4>
+                <div id="numbersDisplay">No numbers added yet...</div>
+            </div>
+
+            <div id="autoboxingResults" style="display: none;">
+                <div class="result-section">
+                    <h3>🎯 Results</h3>
+                    <div>Sum: <span class="result-value" id="autoboxingSum">0</span></div>
+                    <div>Count: <span id="numberCount">0</span> | Average: <span id="numberAverage">0</span></div>
+                </div>
+                <div class="demo-section">
+                    <h4>🔧 Calculation Steps (Unboxing):</h4>
+                    <div id="calculationSteps"></div>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>📚 Autoboxing & Unboxing Concepts</h3>
+                <div class="demo-item">
+                    <strong>Autoboxing:</strong> int primitive → Integer object<br>
+                    <code>Integer boxed = 100; // Automatic conversion</code>
+                </div>
+                <div class="demo-item">
+                    <strong>Unboxing:</strong> Integer object → int primitive<br>
+                    <code>int primitive = boxedInteger; // Automatic conversion</code>
+                </div>
+                <div class="demo-item">
+                    <strong>Collections:</strong> Automatic boxing/unboxing in lists<br>
+                    <code>ArrayList&lt;Integer&gt; list = new ArrayList&lt;&gt;();<br>
+                    list.add(50); // Autoboxing<br>
+                    int sum = list.get(0); // Unboxing</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Serialization -->
+        <div class="main-content" id="main-tab-1">
+            <div class="section">
+                <h3>🎓 Create Student</h3>
+                <form id="studentForm" onsubmit="createStudent(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">Student ID:</label>
+                            <input type="number" id="studentId" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">Full Name:</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentGrade">Grade:</label>
+                            <select id="studentGrade" required>
+                                <option value="">Select Grade</option>
+                                <option value="A+">A+ (90-100%)</option>
+                                <option value="A">A (80-89%)</option>
+                                <option value="B+">B+ (70-79%)</option>
+                                <option value="B">B (60-69%)</option>
+                                <option value="C">C (50-59%)</option>
+                                <option value="D">D (Below 50%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentCgpa">CGPA:</label>
+                            <input type="number" id="studentCgpa" step="0.01" min="0" max="10" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentCourse">Course:</label>
+                            <input type="text" id="studentCourse" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create & Serialize</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section">
+                <h3>👀 Students Database</h3>
+                <div class="form-row">
+                    <button class="btn btn-info" onclick="displayStudents()">Show All Students</button>
+                    <button class="btn btn-warning" onclick="exportStudentData()">Export Data</button>
+                    <button class="btn btn-danger" onclick="clearStudents()">Clear All</button>
+                </div>
+                <div id="studentsContainer"></div>
+            </div>
+
+            <div class="demo-section">
+                <h3>🔧 Serialization Process Demo</h3>
+                <div id="serializationDemo">
+                    <div class="demo-item">
+                        <strong>1. Object Creation:</strong><br>
+                        Student student = new Student(id, name, grade, cgpa);
+                    </div>
+                    <div class="demo-item">
+                        <strong>2. Serialization:</strong><br>
+                        ObjectOutputStream.writeObject(student); // Object → Bytes
+                    </div>
+                    <div class="demo-item">
+                        <strong>3. Storage:</strong><br>
+                        Data stored in memory (simulating file storage)
+                    </div>
+                    <div class="demo-item">
+                        <strong>4. Deserialization:</strong><br>
+                        Student retrieved = ObjectInputStream.readObject(); // Bytes → Object
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employee Management -->
+        <div class="main-content" id="main-tab-2">
+            <div class="section">
+                <h3>👥 Add Employee</h3>
+                <form id="employeeForm" onsubmit="addEmployee(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="empId">Employee ID:</label>
+                            <input type="number" id="empId" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="empName">Full Name:</label>
+                            <input type="text" id="empName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="empDesignation">Designation:</label>
+                            <input type="text" id="empDesignation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="empSalary">Salary ($):</label>
+                            <input type="number" id="empSalary" required min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="empDepartment">Department:</label>
+                            <select id="empDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="HR">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                                <option value="IT">Information Technology</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Employee</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section">
+                <h3>📊 Employee Management</h3>
+                <div class="form-row">
+                    <button class="btn btn-info" onclick="displayEmployees()">Show All Employees</button>
+                    <button class="btn btn-success" onclick="showStatistics()">Show Statistics</button>
+                    <button class="btn btn-warning" onclick="exportEmployeeData()">Export Data</button>
+                    <button class="btn btn-danger" onclick="clearEmployees()">Clear All</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="searchEmpId">Search Employee by ID:</label>
+                        <input type="number" id="searchEmpId" placeholder="Enter Employee ID">
+                    </div>
+                    <button class="btn btn-info" onclick="searchEmployee()">🔍 Search</button>
+                </div>
+            </div>
+
+            <div id="employeeStats" style="display: none;">
+                <div class="stats-grid" id="statsGrid"></div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table" id="employeeTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Salary</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="employeesContainer"></div>
+
+            <div class="demo-section">
+                <h3>📁 File Handling Demonstration</h3>
+                <div class="demo-item">
+                    <strong>CSV Storage:</strong><br>
+                    FileWriter + BufferedWriter for text-based storage<br>
+                    Format: ID,Name,Designation,Salary,Department
+                </div>
+                <div class="demo-item">
+                    <strong>Serialized Storage:</strong><br>
+                    ObjectOutputStream for binary object storage<br>
+                    Complete object state preservation
+                </div>
+                <div class="demo-item">
+                    <strong>Data Retrieval:</strong><br>
+                    FileReader + BufferedReader for CSV reading<br>
+                    ObjectInputStream for object deserialization
+                </div>
+            </div>
+        </div>
+
+        <div id="messageContainer"></div>
+    </div>
+
+    <script>
+        // Global Storage (simulating file storage)
+        let autoboxingNumbers = [];
+        let studentsDatabase = JSON.parse(localStorage.getItem('studentsDB') || '[]');
+        let employeesDatabase = JSON.parse(localStorage.getItem('employeesDB') || '[]');
+
+        // Main Tab Switching
+        function switchMainTab(index) {
+            // Hide all tabs
+            document.querySelectorAll('.main-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.main-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(`main-tab-${index}`).classList.add('active');
+            document.querySelectorAll('.main-tab')[index].classList.add('active');
+        }
+
+        // Message Display
+        function showMessage(text, type = 'info', duration = 4000) {
+            const messageContainer = document.getElementById('messageContainer');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            
+            messageContainer.appendChild(message);
+            
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.remove();
+                }
+            }, duration);
+        }
+
+        // AUTOBOXING CALCULATOR FUNCTIONS
+        function addNumber() {
+            const input = document.getElementById('numberInput');
+            const value = input.value.trim();
+
+            if (!value) {
+                showMessage('Please enter a number!', 'error');
+                return;
+            }
+
+            try {
+                const parsedNumber = parseInt(value);
+                if (isNaN(parsedNumber)) {
+                    throw new Error('Invalid number');
+                }
+
+                // Simulate autoboxing
+                autoboxingNumbers.push({
+                    value: parsedNumber,
+                    type: 'Integer',
+                    originalInput: value
+                });
+
+                showMessage(`✅ Added: ${parsedNumber} (Autoboxed from string "${value}")`, 'success');
+                input.value = '';
+                updateAutoboxingDisplay();
+
+            } catch (error) {
+                showMessage('❌ Invalid number format!', 'error');
+            }
+        }
+
+        function addRandomNumbers() {
+            const countInput = document.getElementById('bulkCount');
+            const count = parseInt(countInput.value);
+
+            if (isNaN(count) || count <= 0 || count > 20) {
+                showMessage('Please enter a valid count (1-20)!', 'error');
+                return;
+            }
+
+            for (let i = 0; i < count; i++) {
+                const randomNum = Math.floor(Math.random() * 1000) + 1;
+                autoboxingNumbers.push({
+                    value: randomNum,
+                    type: 'Integer',
+                    originalInput: randomNum.toString()
+                });
+            }
+
+            showMessage(`✅ Added ${count} random numbers!`, 'success');
+            countInput.value = '';
+            updateAutoboxingDisplay();
+        }
+
+        function clearNumbers() {
+            autoboxingNumbers = [];
+            updateAutoboxingDisplay();
+            document.getElementById('autoboxingResults').style.display = 'none';
+            showMessage('🗑️ All numbers cleared!', 'info');
+        }
+
+        function updateAutoboxingDisplay() {
+            const display = document.getElementById('numbersDisplay');
+            const results = document.getElementById('autoboxingResults');
+
+            if (autoboxingNumbers.length === 0) {
+                display.innerHTML = 'No numbers added yet...';
+                results.style.display = 'none';
+                return;
+            }
+
+            // Display numbers
+            const numbersHtml = autoboxingNumbers.map(num => 
+                `<span class="number-tag">${num.value} (${num.type})</span>`
+            ).join('');
+            display.innerHTML = numbersHtml;
+
+            // Calculate and display results
+            const sum = autoboxingNumbers.reduce((acc, num) => acc + num.value, 0);
+            const count = autoboxingNumbers.length;
+            const average = (sum / count).toFixed(2);
+
+            document.getElementById('autoboxingSum').textContent = sum;
+            document.getElementById('numberCount').textContent = count;
+            document.getElementById('numberAverage').textContent = average;
+
+            // Show calculation steps
+            const steps = ['🔧 Unboxing process during sum calculation:'];
+            let runningSum = 0;
+            autoboxingNumbers.forEach((num, index) => {
+                steps.push(`Step ${index + 1}: Unbox ${num.value} (Integer) → ${num.value} (int)`);
+                runningSum += num.value;
+                steps.push(`         sum += ${num.value}; // Running sum: ${runningSum}`);
+            });
+
+            document.getElementById('calculationSteps').innerHTML = 
+                steps.map(step => `<div class="step">${step}</div>`).join('');
+
+            results.style.display = 'block';
+        }
+
+        // STUDENT SERIALIZATION FUNCTIONS
+        function createStudent(event) {
+            event.preventDefault();
+
+            const studentData = {
+                id: parseInt(document.getElementById('studentId').value),
+                name: document.getElementById('studentName').value,
+                grade: document.getElementById('studentGrade').value,
+                cgpa: parseFloat(document.getElementById('studentCgpa').value),
+                course: document.getElementById('studentCourse').value,
+                serializedAt: new Date().toISOString(),
+                serialVersionUID: Date.now()
+            };
+
+            // Check for duplicate ID
+            if (studentsDatabase.find(s => s.id === studentData.id)) {
+                showMessage('❌ Student with this ID already exists!', 'error');
+                return;
+            }
+
+            // Simulate serialization process
+            const serializedData = JSON.stringify(studentData);
+            
+            // Store (simulate writing to file)
+            studentsDatabase.push(studentData);
+            localStorage.setItem('studentsDB', JSON.stringify(studentsDatabase));
+
+            showMessage(`✅ Student created and serialized! (${serializedData.length} bytes)`, 'success');
+            document.getElementById('studentForm').reset();
+            
+            // Update serialization demo
+            updateSerializationDemo(studentData);
+        }
+
+        function updateSerializationDemo(student) {
+            const demo = document.getElementById('serializationDemo');
+            demo.innerHTML = `
+                <div class="demo-item">
+                    <strong>✅ Recent Serialization:</strong><br>
